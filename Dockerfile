@@ -18,7 +18,7 @@ RUN npm run build
 
 EXPOSE 3333
 
-RUN npx drizzle-kit push
+RUN npx drizzle-kit generate
 
 CMD ["npm", "start"]
 
