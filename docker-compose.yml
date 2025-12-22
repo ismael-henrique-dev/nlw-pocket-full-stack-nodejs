@@ -1,11 +1,27 @@
-
 version: '3.8'
+
 services:
-  pg:
-    image: bitnami/postgresql:13.16.0
+  api:
+    build: .
+    container_name: nlw_pocket_api
     ports:
-      - '5432:5432'
+      - "3333:3333"
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=inorbit
+      DATABASE_URL: postgresql://docker:docker@connect-pg:5432/connect
+    depends_on:
+      - connect-pg
+
+  connect-pg:
+    image: bitnami/postgresql:latest
+    container_name: connect_pg
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: connect
+    volumes:
+      - pgdata:/bitnami/postgresql
+
+volumes:
+  pgdata:
