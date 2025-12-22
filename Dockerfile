@@ -12,6 +12,7 @@ RUN npm run build
 
 EXPOSE 3333
 
-ENV DATABASE_URL="postgresql://docker:docker@localhost:5432/connect"
+RUN npx drizzle-kit push
 
 CMD ["npm", "start"]
+
