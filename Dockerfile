@@ -1,23 +1,27 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copiar arquivos de dependência
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci 
+# Instalar dependências
+RUN npm ci
 
-# Copy source code
+# Copiar código fonte
 COPY . .
 
-# 4. Rodar o build (vai gerar a pasta dist)
-RUN npm run build && npx drizzle-kit migrate
+# --- AQUI ESTAVA O ERRO ---
+# Rodar APENAS o build. Não rode o migrate aqui.
+RUN npm run build
 
 # Expose port
 EXPOSE 3333
 
 # Start the application
-CMD ["node", "http/server.js"]
+# O comando sh -c permite rodar dois comandos em sequência:
+# 1. Faz a migração (agora que tem acesso ao DATABASE_URL)
+# 2. Inicia o servidor rodando o arquivo da pasta dist
+CMD ["sh", "-c", "npx drizzle-kit migrate && node dist/http/server.js"]
