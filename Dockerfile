@@ -1,37 +1,20 @@
-# Estágio 1: Build
+# Build stage
 FROM node:20-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm install
 
+# Install dependencies
+RUN npm ci && npm run build && npx drizzle-kit migrate
+
+# Copy source code
 COPY . .
-RUN npm run build
 
-# Estágio 2: Produção (Imagem final leve)
-FROM node:20-alpine AS runner
-
-WORKDIR /app
-
-# Definir como produção para otimizar dependências
-ENV NODE_ENV=production
-ENV PORT=3333
-
-# Copiar apenas o necessário para rodar
-COPY package*.json ./
-RUN npm install --omit=dev && npm install drizzle-kit
-
-# Copiar os arquivos do estágio anterior
-COPY --from=builder /app/dist ./dist
-# MUITO IMPORTANTE: O nome da sua pasta na imagem é .migrations
-COPY --from=builder /app/.migrations ./.migrations 
-COPY --from=builder /app/drizzle.config.ts ./
-COPY --from=builder /app/start.sh ./
-
-# Garantir permissão de execução
-RUN chmod +x start.sh
-
+# Expose port
 EXPOSE 3333
 
-CMD ["sh", "./start.sh"]
+# Start the application
+CMD ["node", "http/server.js"]
