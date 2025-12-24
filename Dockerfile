@@ -1,14 +1,8 @@
-FROM node
-
-ARG DATABASE_URL
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
-
-ENV DATABASE_URL=$DATABASE_URL
-
-ENV PORT=3333
 
 RUN npm install
 
@@ -16,7 +10,7 @@ COPY . .
 
 RUN npm run build
 
+ENV PORT=3333
 EXPOSE 3333
 
-CMD ["npm", "start"]
-
+CMD ["sh", "./start.sh"]
