@@ -8,10 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci && npm run build && npx drizzle-kit migrate
+RUN npm ci 
 
 # Copy source code
 COPY . .
+
+# 4. Rodar o build (vai gerar a pasta dist)
+RUN npm run build && npx drizzle-kit migrate
 
 # Expose port
 EXPOSE 3333
