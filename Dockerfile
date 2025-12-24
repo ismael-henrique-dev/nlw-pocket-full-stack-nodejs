@@ -20,7 +20,7 @@ ENV PORT=3333
 
 # Copiar apenas o necessário para rodar
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev && npm install drizzle-kit
 
 # Copiar os arquivos do estágio anterior
 COPY --from=builder /app/dist ./dist
